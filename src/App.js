@@ -6,21 +6,31 @@ import { fetchArticles } from "./api-agents/news";
 
 const Headline = ( { data } ) => <section className="headline">
 
-  <h3>{ data.title}</h3>
+  <h3>{data.title}</h3>
   <p>{data.description}</p>
   <a href={data.url}>By {data.source} ({data.url})</a>
 
 </section>;
 
+
 function formatArticle( data ) {
 
-  const description = data.description;
-  const title = data.title;
-  const url = data.url;
-  const source = data.source.name;
-  return { title, description, url, source };
+  // TODO: use const instead of var
+  var description = data.description;
+  var title = data.title;
+  var url = data.url;
+  var source = data.source.name;
+
+  // TODO: use shorthand property syntax (eliminate repetition)
+  return {
+    title: title,
+    description: description,
+    url: url,
+    source: source
+  };
 
 }
+
 class App extends Component {
 
   constructor() {
@@ -33,10 +43,21 @@ class App extends Component {
 
   refresh() {
 
-    fetchArticles()
-      .then( data => data.articles )
-      .then( articles => articles.map( articleData => formatArticle( articleData ) ) )
-      .then( headlines => this.setState( { headlines } ) );
+    // TODO: change this to use chained "then" functions using fat-arrows instead of normal "function"
+    fetchArticles().then( function( data ) {
+
+      var articles = data.articles;
+      var formatted = [];
+      for( var i = 0; i < articles.length; i++ ) {
+
+        var toFormat = articles[ i ];
+        var formattedArticle = formatArticle( toFormat );
+        formatted.push( formattedArticle );
+
+      }
+      this.setState( { headlines: formatted } );
+
+    }.bind( this ) );
 
   }
 
