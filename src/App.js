@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import { fetchArticles } from "./api-agents/news";
+import { groupHeadlines } from "./logic/articles";
 
 const Headline = ( { data } ) => <section className="headline">
 
@@ -15,42 +16,9 @@ const Headline = ( { data } ) => <section className="headline">
 
 function formatArticle( data ) {
 
-  const description = data.description;
-  const title = data.title;
-  const url = data.url;
+  const { description, title, url } = data;
   const source = data.source.name;
-
   return { title, description, url, source };
-
-}
-
-function analyzeArticles( data, ...keywords ) {
-
-    function containsKeywords( article ) {
-
-        return keywords.find( keyword => article.description.includes( keyword ) );
-
-    }
-
-    return data.reduce(
-
-      function( ret, article ) {
-
-          const hasKeyword = containsKeywords( article );
-          return {
-
-            ...ret,
-            ( hasKeyword
-              ? { top: [ ...ret.top, article ] }
-              : { other: [ ...ret.other ], article } )
-
-
-          };
-
-      },
-      { top: [], other: [] }
-
-    )
 
 }
 
@@ -59,18 +27,17 @@ class App extends Component {
   constructor() {
 
     super();
-    this.state = { top: [], other: [] };
+    this.state = { top: [], others: [] };
     this.refresh();
 
   }
 
   refresh() {
 
-    // TODO: change this to use chained "then" functions using fat-arrows instead of normal "function"
-    fetchArticles()
+    fetchArticles( "everything", 50 )
       .then( data => data.articles )
       .then( articles => articles.map( formatArticle ) )
-      .then( headlines => this.setState( analyzeArticles( headlines, "ISP", "Asia", "Disrupt" ) ) );
+      .then( headlines => this.setState( groupHeadlines( headlines ) ) );
 
   }
 
@@ -84,7 +51,7 @@ class App extends Component {
         {this.state.top.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
 
         <h3>Other news</h3>
-        {this.state.other.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
+        {this.state.others.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
 
       </div>
 
