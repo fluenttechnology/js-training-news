@@ -15,19 +15,42 @@ const Headline = ( { data } ) => <section className="headline">
 
 function formatArticle( data ) {
 
-  // TODO: use const instead of var
-  var description = data.description;
-  var title = data.title;
-  var url = data.url;
-  var source = data.source.name;
+  const description = data.description;
+  const title = data.title;
+  const url = data.url;
+  const source = data.source.name;
 
-  // TODO: use shorthand property syntax (eliminate repetition)
-  return {
-    title: title,
-    description: description,
-    url: url,
-    source: source
-  };
+  return { title, description, url, source };
+
+}
+
+function analyzeArticles( data, ...keywords ) {
+
+    function containsKeywords( article ) {
+
+        return keywords.find( keyword => article.description.includes( keyword ) );
+
+    }
+
+    return data.reduce(
+
+      function( ret, article ) {
+
+          const hasKeyword = containsKeywords( article );
+          return {
+
+            ...ret,
+            ( hasKeyword
+              ? { top: [ ...ret.top, article ] }
+              : { other: [ ...ret.other ], article } )
+
+
+          };
+
+      },
+      { top: [], other: [] }
+
+    )
 
 }
 
@@ -36,7 +59,7 @@ class App extends Component {
   constructor() {
 
     super();
-    this.state = { headlines: [] };
+    this.state = { top: [], other: [] };
     this.refresh();
 
   }
@@ -44,32 +67,31 @@ class App extends Component {
   refresh() {
 
     // TODO: change this to use chained "then" functions using fat-arrows instead of normal "function"
-    fetchArticles().then( function( data ) {
-
-      var articles = data.articles;
-      var formatted = [];
-      for( var i = 0; i < articles.length; i++ ) {
-
-        var toFormat = articles[ i ];
-        var formattedArticle = formatArticle( toFormat );
-        formatted.push( formattedArticle );
-
-      }
-      this.setState( { headlines: formatted } );
-
-    }.bind( this ) );
+    fetchArticles()
+      .then( data => data.articles )
+      .then( articles => articles.map( formatArticle ) )
+      .then( headlines => this.setState( analyzeArticles( headlines, "ISP", "Asia", "Disrupt" ) ) );
 
   }
 
   render() {
+
     return (
+
       <div className="App">
 
-        <h3>Some news</h3>
-        {this.state.headlines.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
+        <h3>Top news</h3>
+        {this.state.top.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
+
+        <h3>Other news</h3>
+        {this.state.other.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
+
       </div>
+
     );
+
   }
+
 }
 
 export default App;
