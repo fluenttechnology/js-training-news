@@ -1,0 +1,1 @@
+export const criteria = [ "New York", "CTO", "logistics", "crypto" ];

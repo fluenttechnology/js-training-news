@@ -1,0 +1,39 @@
+.class-list {
+
+    padding: 0;
+    list-style: none;
+
+}
+.class-list li {
+
+    display: inline-flex;
+    border: solid 1px #EEE;
+    background-color: #EEE;
+    border-radius: 10px;
+    margin-right: 5px;
+    white-space: nowrap;
+    align-items: center;
+    overflow: hidden;
+
+}
+.class-list li > * {
+
+    padding: 5px 10px;
+    font-size: 10pt;
+
+}
+
+.class-list li .remove {
+
+    flex-basis: auto;
+    background-color: white;
+    border: none;
+    outline: none;
+
+}
+
+.class-list li .remove:hover {
+
+    background-color: #CCC;
+
+}
