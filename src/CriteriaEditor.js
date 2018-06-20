@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import "./CriteriaEditor.css";
+
 class CriteriaEditor extends Component {
 
     constructor() {
@@ -40,6 +42,7 @@ class CriteriaEditor extends Component {
         </form>;
 
     }
+
 }
 
 export default CriteriaEditor;
