@@ -1,9 +1,8 @@
 import React from "react";
-import { criteria } from "./logic/top-criteria";
 
 import "./CriteriaList.css";
 
-const CriteriaList = ( { handleRemoveCriteria } ) => <ul className="class-list">
+const CriteriaList = ( { criteria, handleRemoveCriteria } ) => <ul className="class-list">
 
     {criteria.map(( item, index ) => <li key={index}>
 

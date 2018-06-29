@@ -49,28 +49,28 @@ class App extends Component {
 
   removeCriteria( item ) {
 
-    if ( !criteria.includes( item ) ) return;
-    criteria.splice( criteria.indexOf( item ), 1 );
-    this.refresh();
+    const { dispatch } = this.props;
+    dispatch( { type: "REMOVE_CRITERIA", payload: item } );
 
   }
 
   addCriteria( item ) {
 
-    if ( criteria.includes( item ) ) return;
-    criteria.push( item );
-    this.refresh();
+    const { dispatch } = this.props;
+    dispatch( { type: "ADD_CRITERIA", payload: item } );
 
   }
 
   render() {
+
+    const { data } = this.props;
 
     return (
 
       <div className="App">
 
         <CriteriaEditor handleAddCriteria={item => this.addCriteria( item )} />
-        <CriteriaList handleRemoveCriteria={item => this.removeCriteria( item )} />
+        <CriteriaList criteria={data.criteria} handleRemoveCriteria={item => this.removeCriteria( item )} />
 
         <h3>Top news</h3>
         {this.state.top.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
