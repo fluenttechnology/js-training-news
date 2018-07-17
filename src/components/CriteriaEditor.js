@@ -20,10 +20,10 @@ class CriteriaEditor extends Component {
     handleSubmit( e ) {
 
         e.preventDefault();
-        const { handleAddCriteria } = this.props;
+        const { addCriteria } = this.props;
         const { value } = this.state;
         if ( value === null ) return;
-        handleAddCriteria( value );
+        addCriteria( value );
         this.setState( { value: "" } );
 
     }

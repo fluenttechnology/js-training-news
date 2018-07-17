@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-import NewsAgent from "./api-agents/news";
-import { fetchApiKey } from "./config";
-import { groupHeadlines } from "./logic/articles";
-import CriteriaList from "./CriteriaList";
-import CriteriaEditor from "./CriteriaEditor";
-
-import { criteria } from "./logic/top-criteria";
+import NewsAgent from "../api-agents/news";
+import { fetchApiKey } from "../config";
+import { groupHeadlines } from "../logic/articles";
+import CriteriaList from "../containers/CriteriaList";
+import CriteriaEditor from "../containers/CriteriaEditor";
 
 const Headline = ( { data } ) => <section className="headline">
 
@@ -34,43 +31,33 @@ class App extends Component {
     super();
     this.state = { top: [], others: [] };
     this.newsAgent = new NewsAgent( fetchApiKey() );
-    this.refresh();
+    setTimeout( this.refresh() );
 
   }
 
+  componentWillReceiveProps() {
+
+    setTimeout( this.refresh() );
+
+  }
   refresh() {
 
     this.newsAgent.fetchArticles( "everything", 50 )
       .then( data => data.articles )
       .then( articles => articles.map( formatArticle ) )
-      .then( headlines => this.setState( groupHeadlines( headlines ) ) );
+      .then( headlines => this.setState( groupHeadlines( headlines, this.props.criteria ) ) );
 
   }
 
-  removeCriteria( item ) {
-
-    const { dispatch } = this.props;
-    dispatch( { type: "REMOVE_CRITERIA", payload: item } );
-
-  }
-
-  addCriteria( item ) {
-
-    const { dispatch } = this.props;
-    dispatch( { type: "ADD_CRITERIA", payload: item } );
-
-  }
 
   render() {
-
-    const { data } = this.props;
 
     return (
 
       <div className="App">
 
-        <CriteriaEditor handleAddCriteria={item => this.addCriteria( item )} />
-        <CriteriaList criteria={data.criteria} handleRemoveCriteria={item => this.removeCriteria( item )} />
+        <CriteriaEditor />
+        <CriteriaList />
 
         <h3>Top news</h3>
         {this.state.top.map( ( headline, i ) => <Headline data={headline} key={i} /> )}

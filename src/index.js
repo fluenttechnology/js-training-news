@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './containers/App';
 import registerServiceWorker from './registerServiceWorker';
 
 import { combineReducers, createStore } from "redux";
+import { Provider } from "react-redux";
+
 import criteria from "./reducers/criteria";
 
 const reducers = combineReducers( { criteria } );
@@ -14,10 +16,10 @@ const store = createStore(
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 
 );
-store.subscribe( () =>
+ReactDOM.render(
 
-    ReactDOM.render(<App data={store.getState()} dispatch={store.dispatch} />, document.getElementById('root'))
+    <Provider store={store}><App /></Provider>,
+    document.getElementById('root')
 
 );
-store.dispatch( { type: "init" } );
 registerServiceWorker();

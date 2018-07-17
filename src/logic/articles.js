@@ -1,8 +1,6 @@
-import { criteria } from "./top-criteria";
-
 const contains = ( text, terms ) => !!terms.find( term => text.toLowerCase().includes( term.toLowerCase() ) );
 
-export function groupHeadlines( headlines ) {
+export function groupHeadlines( headlines, criteria ) {
 
   const grouped = headlines.reduce(
 
