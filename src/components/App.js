@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import NewsAgent from "../api-agents/news";
-import { fetchApiKey } from "../config";
-import { groupHeadlines } from "../logic/articles";
 import CriteriaList from "../containers/CriteriaList";
 import CriteriaEditor from "../containers/CriteriaEditor";
 
@@ -15,43 +12,25 @@ const Headline = ( { data } ) => <section className="headline">
 
 </section>;
 
-
-function formatArticle( data ) {
-
-  const { description, title, url } = data;
-  const source = data.source.name;
-  return { title, description, url, source };
-
-}
-
 class App extends Component {
 
   constructor() {
 
     super();
     this.state = { top: [], others: [] };
-    this.newsAgent = new NewsAgent( fetchApiKey() );
-    setTimeout( this.refresh() );
 
   }
 
-  componentWillReceiveProps() {
-
-    setTimeout( this.refresh() );
-
-  }
   refresh() {
 
-    this.newsAgent.fetchArticles( "everything", 50 )
-      .then( data => data.articles )
-      .then( articles => articles.map( formatArticle ) )
-      .then( headlines => this.setState( groupHeadlines( headlines, this.props.criteria ) ) );
+    const { fetchArticles } = this.props;
+    fetchArticles( this.props.criteria );
 
   }
-
 
   render() {
 
+    const { top, others } = this.props.articles;
     return (
 
       <div className="App">
@@ -59,11 +38,13 @@ class App extends Component {
         <CriteriaEditor />
         <CriteriaList />
 
+        <button onClick={() => this.refresh()}>Refresh</button>
+
         <h3>Top news</h3>
-        {this.state.top.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
+        {top && top.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
 
         <h3>Other news</h3>
-        {this.state.others.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
+        {others && others.map( ( headline, i ) => <Headline data={headline} key={i} /> )}
 
       </div>
 

@@ -8,8 +8,9 @@ import { combineReducers, createStore } from "redux";
 import { Provider } from "react-redux";
 
 import criteria from "./reducers/criteria";
+import articles from "./reducers/articles";
 
-const reducers = combineReducers( { criteria } );
+const reducers = combineReducers( { criteria, articles } );
 const store = createStore(
 
     reducers,
